@@ -12,30 +12,50 @@ export class ShortenerTypeOrmRepository implements IShortenerRepository {
     private readonly repo: Repository<ShortUrlModel>,
   ) {}
 
-  async save(shortUrl: ShortUrl): Promise<ShortUrl> {
-    const model: ShortUrlModel = {
-      id: shortUrl.id,
-      shortCode: shortUrl.shortCode,
-      originalUrl: shortUrl.originalUrl,
-      createdAt: shortUrl.createdAt,
-    };
-    await this.repo.save(model);
-    return shortUrl;
+  async save(data: Omit<ShortUrl, 'id'>): Promise<ShortUrl> {
+    const model = this.repo.create({
+      shortCode: data.shortCode,
+      fullUrl: data.fullUrl,
+      user: data.userId != null ? { id: data.userId } : null,
+      clickCount: data.clickCount,
+      createdAt: data.createdAt,
+      expiresAt: data.expiresAt ?? null,
+      active: data.active,
+    });
+    const saved = await this.repo.save(model);
+    return this.toDomain(saved);
   }
 
   async findByShortCode(shortCode: string): Promise<ShortUrl | null> {
-    const model = await this.repo.findOne({ where: { shortCode } });
+    const model = await this.repo.findOne({
+      where: { shortCode },
+      relations: ['user'],
+    });
     if (!model) return null;
-    return new ShortUrl(
-      model.id,
-      model.shortCode,
-      model.originalUrl,
-      model.createdAt,
-    );
+    return this.toDomain(model);
   }
 
   async existsShortCode(shortCode: string): Promise<boolean> {
     const count = await this.repo.count({ where: { shortCode } });
     return count > 0;
+  }
+
+  async incrementClickCount(shortCode: string): Promise<void> {
+    await this.repo.increment({ shortCode }, 'clickCount', 1);
+  }
+
+  private toDomain(model: ShortUrlModel): ShortUrl {
+    const user = model.user as { id?: number } | null | undefined;
+    const userId = user?.id ?? null;
+    return new ShortUrl(
+      model.id,
+      model.shortCode,
+      model.fullUrl,
+      userId,
+      model.clickCount,
+      model.createdAt,
+      model.expiresAt,
+      model.active,
+    );
   }
 }

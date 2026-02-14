@@ -4,11 +4,12 @@ import { SHORTENER_REPOSITORY } from '../../domain/shortener/shortener.repositor
 
 describe('GetOriginalUrlService', () => {
   let service: GetOriginalUrlService;
-  let repository: { findByShortCode: jest.Mock };
+  let repository: { findByShortCode: jest.Mock; incrementClickCount: jest.Mock };
 
   beforeEach(async () => {
     repository = {
       findByShortCode: jest.fn(),
+      incrementClickCount: jest.fn().mockResolvedValue(undefined),
     };
 
     const module: TestingModule = await Test.createTestingModule({
@@ -28,12 +29,16 @@ describe('GetOriginalUrlService', () => {
     expect(service).toBeDefined();
   });
 
-  it('should return original URL when short code exists', async () => {
+  it('should return full URL when short code exists and is active', async () => {
     const shortUrl = {
-      id: '1',
+      id: 1,
       shortCode: 'abc12345',
-      originalUrl: 'https://example.com',
+      fullUrl: 'https://example.com',
+      userId: null,
+      clickCount: 0,
       createdAt: new Date(),
+      expiresAt: null,
+      active: true,
     };
     repository.findByShortCode.mockResolvedValue(shortUrl);
 
@@ -41,6 +46,25 @@ describe('GetOriginalUrlService', () => {
 
     expect(result).toBe('https://example.com');
     expect(repository.findByShortCode).toHaveBeenCalledWith('abc12345');
+    expect(repository.incrementClickCount).toHaveBeenCalledWith('abc12345');
+  });
+
+  it('should return null when short URL is inactive', async () => {
+    repository.findByShortCode.mockResolvedValue({
+      id: 1,
+      shortCode: 'abc12345',
+      fullUrl: 'https://example.com',
+      userId: null,
+      clickCount: 0,
+      createdAt: new Date(),
+      expiresAt: null,
+      active: false,
+    });
+
+    const result = await service.execute('abc12345');
+
+    expect(result).toBeNull();
+    expect(repository.incrementClickCount).not.toHaveBeenCalled();
   });
 
   it('should return null when short code does not exist', async () => {

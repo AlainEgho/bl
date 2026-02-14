@@ -43,7 +43,7 @@ describe('ShortenerController', () => {
       const result = {
         shortCode: 'abc12XYZ',
         shortUrl: '/s/abc12XYZ',
-        originalUrl: 'https://example.com',
+        fullUrl: 'https://example.com',
       };
       jest.spyOn(createShortUrl, 'execute').mockResolvedValue(result);
 
@@ -51,7 +51,10 @@ describe('ShortenerController', () => {
         url: 'https://example.com',
       });
 
-      expect(response).toEqual(result);
+      expect(response).toEqual({
+        ...result,
+        originalUrl: 'https://example.com',
+      });
       expect(createShortUrl.execute).toHaveBeenCalledWith({
         url: 'https://example.com',
       });

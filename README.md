@@ -56,6 +56,7 @@ Coverage report is generated in the `coverage/` directory (open `coverage/lcov-r
 ## Documentation
 
 - **[docs/API.md](docs/API.md)** – API reference: create short URL and redirect by short code.
+- **[docs/LOGGING.md](docs/LOGGING.md)** – Request/response logging (console + file, configurable).
 
 ## API overview
 

@@ -9,17 +9,24 @@ describe('ShortenerRepository', () => {
   });
 
   it('should save and find by short code', async () => {
-    const shortUrl = new ShortUrl(
-      'id-1',
-      'abc12345',
-      'https://example.com',
-      new Date(),
-    );
+    const data: Omit<ShortUrl, 'id'> = {
+      shortCode: 'abc12345',
+      fullUrl: 'https://example.com',
+      userId: null,
+      clickCount: 0,
+      createdAt: new Date(),
+      expiresAt: null,
+      active: true,
+    };
 
-    await repository.save(shortUrl);
+    const saved = await repository.save(data);
 
+    expect(saved.id).toBeDefined();
+    expect(saved.shortCode).toBe('abc12345');
+    expect(saved.fullUrl).toBe('https://example.com');
     const found = await repository.findByShortCode('abc12345');
-    expect(found).toEqual(shortUrl);
+    expect(found).not.toBeNull();
+    expect(found!.fullUrl).toBe('https://example.com');
     expect(await repository.existsShortCode('abc12345')).toBe(true);
   });
 
@@ -29,15 +36,36 @@ describe('ShortenerRepository', () => {
   });
 
   it('should return saved entity from save', async () => {
-    const shortUrl = new ShortUrl(
-      'id-2',
-      'xyz67890',
-      'https://other.com',
-      new Date(),
-    );
+    const data: Omit<ShortUrl, 'id'> = {
+      shortCode: 'xyz67890',
+      fullUrl: 'https://other.com',
+      userId: null,
+      clickCount: 0,
+      createdAt: new Date(),
+      expiresAt: null,
+      active: true,
+    };
 
-    const saved = await repository.save(shortUrl);
+    const saved = await repository.save(data);
 
-    expect(saved).toBe(shortUrl);
+    expect(saved.id).toBeDefined();
+    expect(saved.shortCode).toBe('xyz67890');
+    expect(saved.fullUrl).toBe('https://other.com');
+  });
+
+  it('should increment click count', async () => {
+    const data: Omit<ShortUrl, 'id'> = {
+      shortCode: 'cnt12345',
+      fullUrl: 'https://count.com',
+      userId: null,
+      clickCount: 0,
+      createdAt: new Date(),
+      expiresAt: null,
+      active: true,
+    };
+    await repository.save(data);
+    await repository.incrementClickCount('cnt12345');
+    const found = await repository.findByShortCode('cnt12345');
+    expect(found!.clickCount).toBe(1);
   });
 });

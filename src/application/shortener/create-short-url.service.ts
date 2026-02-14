@@ -7,12 +7,14 @@ const ALPHABET = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789
 
 export interface CreateShortUrlCommand {
   url: string;
+  expiresAt?: Date | null;
+  userId?: number | null;
 }
 
 export interface CreateShortUrlResult {
   shortCode: string;
   shortUrl: string;
-  originalUrl: string;
+  fullUrl: string;
 }
 
 @Injectable()
@@ -23,19 +25,27 @@ export class CreateShortUrlService {
   ) {}
 
   async execute(command: CreateShortUrlCommand): Promise<CreateShortUrlResult> {
-    const originalUrl = this.normalizeUrl(command.url);
-    this.validateUrl(originalUrl);
+    const fullUrl = this.normalizeUrl(command.url);
+    this.validateUrl(fullUrl);
 
     const shortCode = await this.generateUniqueShortCode();
-    const id = crypto.randomUUID();
-    const shortUrl = new ShortUrl(id, shortCode, originalUrl, new Date());
+    const now = new Date();
+    const data: Omit<ShortUrl, 'id'> = {
+      shortCode,
+      fullUrl,
+      userId: command.userId ?? null,
+      clickCount: 0,
+      createdAt: now,
+      expiresAt: command.expiresAt ?? null,
+      active: true,
+    };
 
-    await this.repository.save(shortUrl);
+    await this.repository.save(data);
 
     return {
       shortCode,
       shortUrl: `/s/${shortCode}`,
-      originalUrl,
+      fullUrl,
     };
   }
 

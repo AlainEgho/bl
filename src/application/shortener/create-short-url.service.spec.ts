@@ -1,8 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { CreateShortUrlService } from './create-short-url.service';
 import { SHORTENER_REPOSITORY } from '../../domain/shortener/shortener.repository.port';
-import { ShortUrl } from '../../domain/shortener';
-
 describe('CreateShortUrlService', () => {
   let service: CreateShortUrlService;
   let repository: {
@@ -36,29 +34,30 @@ describe('CreateShortUrlService', () => {
   it('should create a short URL and save it', async () => {
     const result = await service.execute({ url: 'https://example.com' });
 
-    expect(result.originalUrl).toBe('https://example.com');
+    expect(result.fullUrl).toBe('https://example.com');
     expect(result.shortCode).toHaveLength(8);
     expect(result.shortUrl).toBe(`/s/${result.shortCode}`);
     expect(repository.save).toHaveBeenCalledTimes(1);
     const saved = repository.save.mock.calls[0][0];
-    expect(saved).toBeInstanceOf(ShortUrl);
-    expect(saved.originalUrl).toBe('https://example.com');
+    expect(saved.fullUrl).toBe('https://example.com');
     expect(saved.shortCode).toBe(result.shortCode);
+    expect(saved.clickCount).toBe(0);
+    expect(saved.active).toBe(true);
   });
 
   it('should add https:// when URL has no scheme', async () => {
     const result = await service.execute({ url: 'example.com' });
 
-    expect(result.originalUrl).toBe('https://example.com');
+    expect(result.fullUrl).toBe('https://example.com');
     expect(repository.save).toHaveBeenCalledWith(
-      expect.objectContaining({ originalUrl: 'https://example.com' }),
+      expect.objectContaining({ fullUrl: 'https://example.com' }),
     );
   });
 
   it('should trim URL before processing', async () => {
     const result = await service.execute({ url: '  https://example.com  ' });
 
-    expect(result.originalUrl).toBe('https://example.com');
+    expect(result.fullUrl).toBe('https://example.com');
   });
 
   it('should throw on invalid URL', async () => {

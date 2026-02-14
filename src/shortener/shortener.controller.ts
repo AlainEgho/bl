@@ -22,7 +22,8 @@ export class ShortenerController {
   @Post('shorten')
   async shorten(@Body() dto: CreateShortUrlDto) {
     try {
-      return await this.createShortUrl.execute({ url: dto.url });
+      const result = await this.createShortUrl.execute({ url: dto.url });
+      return { ...result, originalUrl: result.fullUrl };
     } catch (err) {
       const message = err instanceof Error ? err.message : 'Invalid request';
       throw new BadRequestException(message);

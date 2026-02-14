@@ -10,6 +10,10 @@ export class GetOriginalUrlService {
 
   async execute(shortCode: string): Promise<string | null> {
     const shortUrl = await this.repository.findByShortCode(shortCode);
-    return shortUrl?.originalUrl ?? null;
+    if (!shortUrl) return null;
+    if (!shortUrl.active) return null;
+    if (shortUrl.expiresAt != null && shortUrl.expiresAt < new Date()) return null;
+    await this.repository.incrementClickCount(shortCode);
+    return shortUrl.fullUrl;
   }
 }
