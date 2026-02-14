@@ -14,6 +14,9 @@ A NestJS URL shortener with clean architecture and an Angular frontend.
 npm install
 ```
 
+**MySQL (required for the API):**  
+Install MySQL and create a database named `shortener`. Copy `.env.example` to `.env` and set your DB credentials. See [docs/MYSQL.md](docs/MYSQL.md) for install steps.
+
 **Frontend (Angular):**
 ```bash
 cd frontend && npm install
