@@ -3,12 +3,9 @@ import {
   PrimaryGeneratedColumn,
   Column,
   CreateDateColumn,
-  ManyToOne,
-  JoinColumn,
 } from 'typeorm';
-import { UserModel } from './user.model';
 
-@Entity('short_urls')
+@Entity('shorteners')
 export class ShortUrlModel {
   @PrimaryGeneratedColumn()
   id: number;
@@ -19,9 +16,8 @@ export class ShortUrlModel {
   @Column({ name: 'full_url', nullable: false, length: 2048 })
   fullUrl: string;
 
-  @ManyToOne(() => UserModel, { lazy: true, nullable: true, onDelete: 'SET NULL' })
-  @JoinColumn({ name: 'user_id' })
-  user: Promise<UserModel> | UserModel | null;
+  @Column({ name: 'user_id', type: 'int', nullable: true })
+  userId: number | null;
 
   @Column({ name: 'click_count', nullable: false, default: 0 })
   clickCount: number;

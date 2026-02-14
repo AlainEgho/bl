@@ -5,7 +5,6 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { ShortenerModule } from './shortener/shortener.module';
 import { ShortUrlModel } from './infrastructure/shortener/entities/short-url.model';
-import { UserModel } from './infrastructure/shortener/entities/user.model';
 
 @Module({
   imports: [
@@ -18,8 +17,8 @@ import { UserModel } from './infrastructure/shortener/entities/user.model';
         port: Number(config.get('DB_PORT', 3306)),
         username: config.get('DB_USERNAME', 'root'),
         password: config.get('DB_PASSWORD', 'egho'),
-        database: config.get('DB_DATABASE', 'egho'),
-        entities: [UserModel, ShortUrlModel],
+        database: config.get('DB_DATABASE', 'backend'),
+        entities: [ShortUrlModel],
         synchronize: config.get('NODE_ENV') !== 'production',
       }),
       inject: [ConfigService],

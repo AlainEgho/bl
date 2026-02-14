@@ -16,7 +16,7 @@ export class ShortenerTypeOrmRepository implements IShortenerRepository {
     const model = this.repo.create({
       shortCode: data.shortCode,
       fullUrl: data.fullUrl,
-      user: data.userId != null ? { id: data.userId } : null,
+      userId: data.userId,
       clickCount: data.clickCount,
       createdAt: data.createdAt,
       expiresAt: data.expiresAt ?? null,
@@ -27,10 +27,7 @@ export class ShortenerTypeOrmRepository implements IShortenerRepository {
   }
 
   async findByShortCode(shortCode: string): Promise<ShortUrl | null> {
-    const model = await this.repo.findOne({
-      where: { shortCode },
-      relations: ['user'],
-    });
+    const model = await this.repo.findOne({ where: { shortCode } });
     if (!model) return null;
     return this.toDomain(model);
   }
@@ -45,13 +42,11 @@ export class ShortenerTypeOrmRepository implements IShortenerRepository {
   }
 
   private toDomain(model: ShortUrlModel): ShortUrl {
-    const user = model.user as { id?: number } | null | undefined;
-    const userId = user?.id ?? null;
     return new ShortUrl(
       model.id,
       model.shortCode,
       model.fullUrl,
-      userId,
+      model.userId ?? null,
       model.clickCount,
       model.createdAt,
       model.expiresAt,
