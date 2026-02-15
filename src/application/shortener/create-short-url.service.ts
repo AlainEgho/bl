@@ -1,6 +1,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { ShortUrl } from '../../domain/shortener';
 import { IShortenerRepository, SHORTENER_REPOSITORY } from '../../domain/shortener/shortener.repository.port';
+import { CurrentUserService } from '../../auth/current-user.service';
 
 const SHORT_CODE_LENGTH = 8;
 const ALPHABET = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
@@ -22,6 +23,7 @@ export class CreateShortUrlService {
   constructor(
     @Inject(SHORTENER_REPOSITORY)
     private readonly repository: IShortenerRepository,
+    private readonly currentUser: CurrentUserService,
   ) {}
 
   async execute(command: CreateShortUrlCommand): Promise<CreateShortUrlResult> {
@@ -30,10 +32,11 @@ export class CreateShortUrlService {
 
     const shortCode = await this.generateUniqueShortCode();
     const now = new Date();
+    const userId = command.userId ?? this.currentUser.getUserId() ?? null;
     const data: Omit<ShortUrl, 'id'> = {
       shortCode,
       fullUrl,
-      userId: command.userId ?? null,
+      userId,
       clickCount: 0,
       createdAt: now,
       expiresAt: command.expiresAt ?? null,

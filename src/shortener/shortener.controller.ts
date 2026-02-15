@@ -11,6 +11,7 @@ import { Response } from 'express';
 import { CreateShortUrlDto } from './dto/create-short-url.dto';
 import { CreateShortUrlService } from '../application/shortener/create-short-url.service';
 import { GetOriginalUrlService } from '../application/shortener/get-original-url.service';
+import { Public } from '../auth/public.decorator';
 
 @Controller()
 export class ShortenerController {
@@ -30,6 +31,7 @@ export class ShortenerController {
     }
   }
 
+  @Public()
   @Get('s/:code')
   async redirect(@Param('code') code: string, @Res() res: Response) {
     const originalUrl = await this.getOriginalUrl.execute(code);
