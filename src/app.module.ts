@@ -8,6 +8,8 @@ import { AuthModule } from './auth/auth.module';
 import { ValidateTokenGuard } from './auth/validate-token.guard';
 import { ShortenerModule } from './shortener/shortener.module';
 import { ShortUrlModel } from './infrastructure/shortener/entities/short-url.model';
+import { ImageUploadModel } from './infrastructure/image/entities/image-upload.model';
+import { ImageModule } from './image/image.module';
 
 @Module({
   imports: [
@@ -22,12 +24,13 @@ import { ShortUrlModel } from './infrastructure/shortener/entities/short-url.mod
         username: config.get('DB_USERNAME', 'root'),
         password: config.get('DB_PASSWORD', 'egho'),
         database: config.get('DB_DATABASE', 'backend'),
-        entities: [ShortUrlModel],
+        entities: [ShortUrlModel, ImageUploadModel],
         synchronize: config.get('NODE_ENV') !== 'production',
       }),
       inject: [ConfigService],
     }),
     ShortenerModule,
+    ImageModule,
   ],
   controllers: [AppController],
   providers: [
