@@ -35,13 +35,15 @@ export class ValidateTokenGuard implements CanActivate {
   ) {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
+    const request = context.switchToHttp().getRequest<Request>();
+    if (request.path?.startsWith('/api')) return true;
+
     const isPublic = this.reflector.getAllAndOverride<boolean>(IS_PUBLIC_KEY, [
       context.getHandler(),
       context.getClass(),
     ]);
     if (isPublic) return true;
 
-    const request = context.switchToHttp().getRequest<Request>();
     const token = this.getToken(request);
     if (!token) {
       throw new UnauthorizedException('Missing or invalid authorization token');

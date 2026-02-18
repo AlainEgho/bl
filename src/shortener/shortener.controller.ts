@@ -7,12 +7,14 @@ import {
   Post,
   Res,
 } from '@nestjs/common';
+import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { Response } from 'express';
 import { CreateShortUrlDto } from './dto/create-short-url.dto';
 import { CreateShortUrlService } from '../application/shortener/create-short-url.service';
 import { GetOriginalUrlService } from '../application/shortener/get-original-url.service';
 import { Public } from '../auth/public.decorator';
 
+@ApiTags('Shortener')
 @Controller()
 export class ShortenerController {
   constructor(
@@ -21,6 +23,8 @@ export class ShortenerController {
   ) {}
 
   @Post('shorten')
+  @ApiBearerAuth('JWT')
+  @ApiOperation({ summary: 'Create a short URL (requires JWT)' })
   async shorten(@Body() dto: CreateShortUrlDto) {
     try {
       const result = await this.createShortUrl.execute({ url: dto.url });
@@ -33,6 +37,7 @@ export class ShortenerController {
 
   @Public()
   @Get('s/:code')
+  @ApiOperation({ summary: 'Redirect to original URL by short code' })
   async redirect(@Param('code') code: string, @Res() res: Response) {
     const originalUrl = await this.getOriginalUrl.execute(code);
     if (!originalUrl) {

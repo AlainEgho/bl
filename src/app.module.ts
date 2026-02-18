@@ -25,7 +25,7 @@ import { ImageModule } from './image/image.module';
         password: config.get('DB_PASSWORD', 'egho'),
         database: config.get('DB_DATABASE', 'backend'),
         entities: [ShortUrlModel, ImageUploadModel],
-        synchronize: config.get('NODE_ENV') !== 'production',
+        synchronize: false,
       }),
       inject: [ConfigService],
     }),

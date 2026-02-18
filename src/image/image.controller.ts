@@ -5,20 +5,19 @@ import {
   Res,
   NotFoundException,
 } from '@nestjs/common';
+import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { Response } from 'express';
 import { ImageService } from './image.service';
 import { Public } from '../auth/public.decorator';
 
+@ApiTags('Images')
 @Controller()
 export class ImageController {
   constructor(private readonly imageService: ImageService) {}
 
-  /**
-   * Serve image by short code. No token required.
-   * GET /i/:code → stream image from uploads path (from DB file_path).
-   */
   @Public()
   @Get('i/:code')
+  @ApiOperation({ summary: 'Serve image by short code (no auth)' })
   async serveImage(@Param('code') code: string, @Res() res: Response) {
     try {
       const { contentType, stream } =
