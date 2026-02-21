@@ -2,11 +2,13 @@ import 'dotenv/config';
 import { ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import { NestExpressApplication } from '@nestjs/platform-express';
 import { AppModule } from './app.module';
 import { HttpLoggerMiddleware } from './logging/http-logger.middleware';
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
+  const app = await NestFactory.create<NestExpressApplication>(AppModule);
+  app.set('trust proxy', true);
   app.use(new HttpLoggerMiddleware().use.bind(new HttpLoggerMiddleware()));
   app.useGlobalPipes(new ValidationPipe({ whitelist: true }));
   app.enableCors({ origin: ['http://localhost:4200'], credentials: true });
