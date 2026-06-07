@@ -26,17 +26,17 @@ async function bootstrap() {
     allowedHeaders: '*',
   });
 
-  const config = new DocumentBuilder()
-    .setTitle('Shortener API')
-    .setDescription('URL shortener and image serve API. Use **Authorize** to add a Bearer token for protected endpoints.')
-    .setVersion('1.0')
-    .addBearerAuth(
-      { type: 'http', scheme: 'bearer', bearerFormat: 'JWT', name: 'Authorization' },
-      'JWT',
-    )
-    .build();
-  const document = SwaggerModule.createDocument(app, config);
-  SwaggerModule.setup('api', app, document);
+  // const config = new DocumentBuilder()
+  //   .setTitle('Shortener API')
+  //   .setDescription('URL shortener and image serve API. Use **Authorize** to add a Bearer token for protected endpoints.')
+  //   .setVersion('1.0')
+  //   .addBearerAuth(
+  //     { type: 'http', scheme: 'bearer', bearerFormat: 'JWT', name: 'Authorization' },
+  //     'JWT',
+  //   )
+  //   .build();
+  // const document = SwaggerModule.createDocument(app, config);
+  // SwaggerModule.setup('api', app, document);
 
   await app.listen(3000);
 }
