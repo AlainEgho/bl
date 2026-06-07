@@ -1,22 +1,35 @@
-# URL Shortener API
+# API reference
 
-Base URL (default): `http://localhost:3000`
+Base URL (default): `http://localhost:3000`  
+Swagger UI: `http://localhost:3000/api`
+
+For Angular integration, suggested pages, and `HttpClient` examples, see **[ANGULAR.md](./ANGULAR.md)**.
+
+---
+
+## Endpoints summary
+
+| Method | Path | Auth | Description |
+|--------|------|------|-------------|
+| `POST` | `/shorten` | Public* | Create a short URL |
+| `GET` | `/s/:code` | Public | Redirect to original URL |
+| `POST` | `/upload-image` | Public* | Upload image, get short link |
+| `GET` | `/i/:code` | Public | Serve image by short code |
+| `GET` | `/` | JWT (when enabled) | Hello / health |
+
+\* Public while JWT guard is disabled for development.
 
 ---
 
 ## Create short URL
 
-Creates a short link for a given URL.
+**`POST /shorten`**
 
-**Endpoint:** `POST /shorten`
+**Request body**
 
-**Request body:**
-
-| Field | Type   | Required | Description                    |
-|-------|--------|----------|--------------------------------|
-| url   | string | yes      | The URL to shorten (max 2048). |
-
-**Example request:**
+| Field | Type | Required | Description |
+|-------|------|----------|-------------|
+| `url` | string | yes | URL to shorten (max 2048). `https://` added if missing. |
 
 ```bash
 curl -X POST http://localhost:3000/shorten \
@@ -24,61 +37,92 @@ curl -X POST http://localhost:3000/shorten \
   -d '{"url": "https://example.com"}'
 ```
 
-**Example response (200):**
+**Response `200`**
 
 ```json
 {
   "shortCode": "abc12XYZ",
   "shortUrl": "/s/abc12XYZ",
+  "fullUrl": "https://example.com",
   "originalUrl": "https://example.com"
 }
 ```
 
-**Notes:**
-
-- If `url` does not start with `http://` or `https://`, `https://` is added.
-- `shortUrl` is the path only; prepend your base URL (e.g. `http://localhost:3000`) to get the full link.
-
-**Error responses:**
-
-- **400** – Invalid or missing URL (e.g. `{"url": "not-a-url"}`).
-- **400** – Validation failed (e.g. empty body or invalid JSON).
+**Errors:** `400` invalid URL · `401` when JWT required and missing
 
 ---
 
 ## Redirect by short code
 
-Redirects the client to the original URL for a given short code.
+**`GET /s/:code`**
 
-**Endpoint:** `GET /s/:code`
+| Param | Description |
+|-------|-------------|
+| `code` | Short code from `POST /shorten` |
 
-**Parameters:**
-
-| Name | Type   | Description   |
-|------|--------|---------------|
-| code | string | Short code.   |
-
-**Example request:**
+**Response:** `302` redirect to original URL  
+**Errors:** `400` short link not found
 
 ```bash
 curl -I http://localhost:3000/s/abc12XYZ
 ```
 
-**Response:**
+---
 
-- **302** – Redirect to the original URL (`Location` header set).
-- **400** – Short link not found (invalid or unknown `code`).
+## Upload image
 
-**Example (browser or follow redirects):**
+**`POST /upload-image`**
 
-Open in browser: `http://localhost:3000/s/abc12XYZ` → you are redirected to the original URL.
+Multipart form field: **`image`** (JPEG, PNG, GIF, WebP; max 10 MB)
+
+```bash
+curl -X POST http://localhost:3000/upload-image \
+  -F "image=@/path/to/photo.png"
+```
+
+**Response `200`**
+
+```json
+{
+  "shortCode": "TNpQ1OAC",
+  "imageUrl": "/i/TNpQ1OAC",
+  "contentType": "image/png",
+  "originalFileName": "photo.png"
+}
+```
+
+Files are stored under `IMAGE_UPLOAD_ROOT` (default `./uploads/images`). Metadata is saved in the `image_uploads` table.
+
+**Errors:** `400` missing file, invalid type, or too large · `401` when JWT required
 
 ---
 
-## Quick usage flow
+## Serve image by short code
 
-1. Create a short link:
-   ```bash
-   curl -X POST http://localhost:3000/shorten -H "Content-Type: application/json" -d "{\"url\": \"https://example.com\"}"
-   ```
-2. Use the returned `shortUrl` (e.g. `/s/abc12XYZ`) as path, or open `http://localhost:3000/s/abc12XYZ` to be redirected.
+**`GET /i/:code`**
+
+| Param | Description |
+|-------|-------------|
+| `code` | Short code from `POST /upload-image` |
+
+**Response:** image bytes with matching `Content-Type`  
+**Errors:** `404` unknown code or file missing on disk
+
+```bash
+# Browser
+open http://localhost:3000/i/TNpQ1OAC
+```
+
+---
+
+## Quick flows
+
+**URL shortener**
+
+1. `POST /shorten` → get `shortUrl`
+2. Open `http://localhost:3000/s/<shortCode>` → redirected to original URL
+
+**Image short link**
+
+1. `POST /upload-image` → get `imageUrl`
+2. Open `http://localhost:3000/i/<shortCode>` → image displayed

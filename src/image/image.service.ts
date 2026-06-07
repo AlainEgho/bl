@@ -25,7 +25,7 @@ export class ImageService {
   ) {
     this.uploadRoot =
       this.config.get<string>(IMAGE_UPLOAD_ROOT) ||
-      'C:\\AI\\backend\\uploads\\images';
+      path.join(process.cwd(), 'uploads', 'images');
   }
 
   async serveByShortCode(shortCode: string): Promise<ImageServeResult> {
