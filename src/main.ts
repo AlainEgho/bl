@@ -11,7 +11,11 @@ async function bootstrap() {
   app.set('trust proxy', true);
   app.use(new HttpLoggerMiddleware().use.bind(new HttpLoggerMiddleware()));
   app.useGlobalPipes(new ValidationPipe({ whitelist: true }));
-  app.enableCors({ origin: ['http://localhost:4200','https://bl-njnyvp1er-alain-s-projects15.vercel.app','https://alainegho.github.io'], credentials: true });
+  app.enableCors({ origin: ['http://localhost:4200','https://bl-njnyvp1er-alain-s-projects15.vercel.app','https://alainegho.github.io'], credentials: true ,
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
+    allowedHeaders: 'Content-Type, Accept, Authorization',
+
+  });
 
   const config = new DocumentBuilder()
     .setTitle('Shortener API')
