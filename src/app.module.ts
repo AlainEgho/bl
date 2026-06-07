@@ -24,10 +24,14 @@ import { ImageModule } from './image/image.module';
         database: config.get('DB_DATABASE', 'backend'),
         entities: [ShortUrlModel, ImageUploadModel],
         synchronize: config.get('NODE_ENV') !== 'production',
-         // 🌟 THIS ENFORCES TLS / SSL CONNECTIONS
-      ssl: {
-        rejectUnauthorized: false, // Required for cloud environments like Vercel/Aiven
-      },
+  // 🌟 SECURE TLS CONFIGURATION FOR MYSQL
+  extra: {
+    ssl: {
+      ca: process.env.DB_CA_CERT, // Reads raw string directly
+      rejectUnauthorized: true,  // Enforce strict certificate matching
+    },
+  },
+
       }),
       inject: [ConfigService],
     }),
