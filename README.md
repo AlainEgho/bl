@@ -55,15 +55,19 @@ Coverage report is generated in the `coverage/` directory (open `coverage/lcov-r
 
 ## Documentation
 
-- **[docs/API.md](docs/API.md)** – API reference: create short URL and redirect by short code.
+- **[docs/ANGULAR.md](docs/ANGULAR.md)** – Angular integration, test pages, and `HttpClient` examples.
+- **[docs/API.md](docs/API.md)** – REST API reference (URL shortener + image links).
+- **[docs/AUTH.md](docs/AUTH.md)** – JWT validation and current user.
 - **[docs/LOGGING.md](docs/LOGGING.md)** – Request/response logging (console + file, configurable).
 
 ## API overview
 
-| Method | Path        | Description                |
-|--------|-------------|----------------------------|
-| POST   | `/shorten`  | Create a short URL          |
-| GET    | `/s/:code`  | Redirect to original URL   |
+| Method | Path            | Description                |
+|--------|-----------------|----------------------------|
+| POST   | `/shorten`      | Create a short URL          |
+| GET    | `/s/:code`      | Redirect to original URL   |
+| POST   | `/upload-image` | Upload image, get short link |
+| GET    | `/i/:code`      | Serve image by short code  |
 
 Example: create a short link and use it:
 

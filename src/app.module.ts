@@ -1,11 +1,9 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
-import { APP_GUARD } from '@nestjs/core';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { AuthModule } from './auth/auth.module';
-import { ValidateTokenGuard } from './auth/validate-token.guard';
 import { ShortenerModule } from './shortener/shortener.module';
 import { ShortUrlModel } from './infrastructure/shortener/entities/short-url.model';
 import { ImageUploadModel } from './infrastructure/image/entities/image-upload.model';
@@ -25,7 +23,7 @@ import { ImageModule } from './image/image.module';
         password: config.get('DB_PASSWORD', 'egho'),
         database: config.get('DB_DATABASE', 'backend'),
         entities: [ShortUrlModel, ImageUploadModel],
-        synchronize: false,
+        synchronize: config.get('NODE_ENV') !== 'production',
       }),
       inject: [ConfigService],
     }),
@@ -33,9 +31,6 @@ import { ImageModule } from './image/image.module';
     ImageModule,
   ],
   controllers: [AppController],
-  providers: [
-    AppService,
-    { provide: APP_GUARD, useClass: ValidateTokenGuard },
-  ],
+  providers: [AppService],
 })
 export class AppModule {}
