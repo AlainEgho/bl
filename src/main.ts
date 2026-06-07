@@ -20,7 +20,7 @@ async function bootstrap() {
   // });
 
   app.enableCors({
-    origin: ['https://alainegho.github.io'], // Echoes back whatever origin requested access dynamically
+    origin: ['https://ux-seven-phi.vercel.app'], // Echoes back whatever origin requested access dynamically
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
     credentials: true,
     allowedHeaders: '*',
