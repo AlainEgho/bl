@@ -24,7 +24,7 @@ import { ImageModule } from './image/image.module';
         database: config.get('DB_DATABASE', 'backend'),
         entities: [ShortUrlModel, ImageUploadModel],
         synchronize: config.get('NODE_ENV') !== 'production',
-  // 🌟 SECURE TLS CONFIGURATION FOR MYSQL
+  // 🌟 SECURE TLS CONFIGURATION FOR MYSQL remove me locallly
   extra: {
     ssl: {
       ca: process.env.DB_CA_CERT, // Reads raw string directly

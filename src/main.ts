@@ -11,7 +11,7 @@ async function bootstrap() {
   app.set('trust proxy', true);
   app.use(new HttpLoggerMiddleware().use.bind(new HttpLoggerMiddleware()));
   app.useGlobalPipes(new ValidationPipe({ whitelist: true }));
-  app.enableCors({ origin: ['http://localhost:4200'], credentials: true });
+  app.enableCors({ origin: ['http://localhost:4200','https://bl-njnyvp1er-alain-s-projects15.vercel.app'], credentials: true });
 
   const config = new DocumentBuilder()
     .setTitle('Shortener API')
