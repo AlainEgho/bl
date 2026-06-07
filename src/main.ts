@@ -18,13 +18,13 @@ async function bootstrap() {
   //   allowedHeaders: '*',
 
   // });
-
-  app.enableCors({
-    origin: ['https://ux-seven-phi.vercel.app'], // Echoes back whatever origin requested access dynamically
-    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
-    credentials: true,
-    allowedHeaders: '*',
-  });
+app.enableCors(); 
+  // app.enableCors({
+  //   origin: ['https://ux-seven-phi.vercel.app'], // Echoes back whatever origin requested access dynamically
+  //   methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
+  //   credentials: true,
+  //   allowedHeaders: '*',
+  // });
 
   // const config = new DocumentBuilder()
   //   .setTitle('Shortener API')
