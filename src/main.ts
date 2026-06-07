@@ -20,9 +20,9 @@ async function bootstrap() {
   // });
 
   app.enableCors({
-    origin: true, // Echoes back whatever origin requested access dynamically
+    origin: ['https://alainegho.github.io'], // Echoes back whatever origin requested access dynamically
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
-    credentials: false,
+    credentials: true,
     allowedHeaders: '*',
   });
 
