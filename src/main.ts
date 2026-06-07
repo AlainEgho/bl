@@ -13,10 +13,17 @@ async function bootstrap() {
   app.useGlobalPipes(new ValidationPipe({ whitelist: true }));
 
   
-  app.enableCors({ origin: ['*'],
-    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
-    allowedHeaders: '*',
+  // app.enableCors({ origin: ['*'],
+  //   methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
+  //   allowedHeaders: '*',
 
+  // });
+
+  app.enableCors({
+    origin: true, // Echoes back whatever origin requested access dynamically
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
+    credentials: true,
+    allowedHeaders: '*',
   });
 
   const config = new DocumentBuilder()
