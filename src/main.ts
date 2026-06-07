@@ -22,7 +22,7 @@ async function bootstrap() {
   app.enableCors({
     origin: true, // Echoes back whatever origin requested access dynamically
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
-    credentials: true,
+    credentials: false,
     allowedHeaders: '*',
   });
 
