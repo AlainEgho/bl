@@ -13,7 +13,7 @@ async function bootstrap() {
   app.useGlobalPipes(new ValidationPipe({ whitelist: true }));
 
   
-   app.enableCors({ origin: 'https://bl-rosy.vercel.app',
+   app.enableCors({ origin: ['https://ux-seven-phi.vercel.app','http://localhost:4200'],
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
      credentials:true,
                    allowedHeaders: '*',
