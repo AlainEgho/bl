@@ -5,6 +5,7 @@ import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { NestExpressApplication } from '@nestjs/platform-express';
 import { AppModule } from './app.module';
 import { HttpLoggerMiddleware } from './logging/http-logger.middleware';
+import { json, urlencoded } from 'express';
 
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
@@ -12,6 +13,8 @@ async function bootstrap() {
   app.use(new HttpLoggerMiddleware().use.bind(new HttpLoggerMiddleware()));
   app.useGlobalPipes(new ValidationPipe({ whitelist: true }));
 
+  app.use(json({ limit: '4.5mb' }));
+  app.use(urlencoded({ extended: true, limit: '4.5mb' }));
   //test
   
    app.enableCors({ origin: 'https://ux-seven-phi.vercel.app',
