@@ -16,7 +16,7 @@ async function bootstrap() {
    app.enableCors({ origin: 'https://ux-seven-phi.vercel.app',
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
      credentials:true,
-                   allowedHeaders: '*',
+                   allowedHeaders: 'Content-Type, Authorization, Accept',
 
   });
 //app.enableCors(); 
