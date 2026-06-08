@@ -12,6 +12,7 @@ async function bootstrap() {
   app.use(new HttpLoggerMiddleware().use.bind(new HttpLoggerMiddleware()));
   app.useGlobalPipes(new ValidationPipe({ whitelist: true }));
 
+  //test
   
    app.enableCors({ origin: 'https://ux-seven-phi.vercel.app',
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
