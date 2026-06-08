@@ -20,7 +20,7 @@ async function bootstrap() {
    app.enableCors({ origin: 'https://ux-seven-phi.vercel.app',
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
      credentials:true,
-                   allowedHeaders: 'Content-Type, Authorization, Accept, X-Requested-With, Content-Length, X-CSRF-Token, Accept-Version, Content-MD5, Date, X-Api-Version,accept-encoding,origin,user-agent,accept-language,priority,referer,sec-fetch-dest,sec-fetch-mode,sec-fetch-site,sec-fetch-user,sec-fetch-header',
+                   allowedHeaders: 'Content-Type, Authorization, Accept, X-Requested-With, Content-Length, X-CSRF-Token, Accept-Version, Content-MD5, Date, X-Api-Version,accept-encoding,origin,user-agent,accept-language,priority,referer,sec-fetch-dest,sec-fetch-mode,sec-fetch-site,sec-fetch-user,sec-fetch-header,Content-Disposition',
 
   });
 //app.enableCors(); 
