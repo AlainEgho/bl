@@ -13,12 +13,13 @@ async function bootstrap() {
   app.useGlobalPipes(new ValidationPipe({ whitelist: true }));
 
   
-  // app.enableCors({ origin: ['*'],
-  //   methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
-  //   allowedHeaders: '*',
+   app.enableCors({ origin: '*',
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
+     credentials:true,
+                   allowedHeaders: '*',
 
-  // });
-app.enableCors(); 
+  });
+//app.enableCors(); 
   // app.enableCors({
   //   origin: ['https://ux-seven-phi.vercel.app'], // Echoes back whatever origin requested access dynamically
   //   methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
